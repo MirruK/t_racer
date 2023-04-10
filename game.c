@@ -1,10 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <signal.h>
-#include <termios.h>
-#include <unistd.h>
-#include <term.h>
-
+#include "t_racer.h"
 
 static char test_text[] =   "Type this text correctly to win.";
 static char empty_text[] =  "                                ";
@@ -17,7 +11,6 @@ void clearScreen() {
     setupterm( NULL, STDOUT_FILENO, &result );
     if (result <= 0) return;
     }
-
   putp( tigetstr( "clear" ) );
 }
 
@@ -33,22 +26,6 @@ void enable_raw_mode(){
     raw.c_lflag &= ~(ECHO | ICANON);
     raw.c_oflag &= ~(OPOST);
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
-}
-
-void take_char(char *buf, int* buf_top){
-    char c = getchar();
-    if(c == 3 || c == 27){
-        disable_raw_mode();
-        exit(0);
-    }
-    buf[*buf_top] = c;
-    *buf_top += 1;
-}
-
-int validate(char *buf, int buf_top, int text_head){
-    // if(buf[buf_top] == '\b') return 3;
-    if(test_text[text_head+1] == '\0' && test_text[text_head] == buf[buf_top-1]) return 2;
-    return test_text[text_head] == buf[buf_top-1];
 }
 
 void game_loop(int mode){
