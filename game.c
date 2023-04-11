@@ -1,7 +1,7 @@
 #include "t_racer.h"
 
-static char test_text[] =   "Type this text correctly to win.";
-static char empty_text[] =  "                                ";
+char test_text[] =   "Type this text correctly to win.";
+char empty_text[] =  "                                ";
 struct termios orig_termios;
 
 void clearScreen() {
@@ -31,7 +31,7 @@ void enable_raw_mode(){
 void game_loop(int mode){
     char buf[100];
     int result, buf_top, text_head;
-    result =  text_head = 0;
+    result = text_head = 0;
     buf_top = 1;
     if(mode == 1){
         // Init
@@ -56,16 +56,15 @@ void game_loop(int mode){
 
             // Step 1.
             take_char(buf, &buf_top);
-            
             clearScreen();
-            // Step 2. 
+            // Step 2.
             switch(validate(buf, buf_top, text_head)) {
                 case 0:
                 printf("\r\nYou typed the wrong character: %c, try %c\r\n", buf[buf_top-1], test_text[text_head]);
                 buf_top--;
                 break;
             case 1:
-                text_head++; 
+                text_head++;
                 break;
             case 2:
                 printf("\r\nCongratulations, you are a capable typist\r\n");
@@ -89,6 +88,8 @@ void game_loop(int mode){
 }
 
 int main(int argc, char *argv[]){
+    char buffer[2000];
+    text_from_file("texts/sample.txt", buffer);
     enable_raw_mode();
     game_loop(1);
     exit(0);

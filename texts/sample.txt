@@ -1,0 +1,6 @@
+This is a text that the user should write.
+The newlines should be ignored and whitespace
+should be inserted in their place, the text
+should also be wrapped according to terminal
+window size.
+
