@@ -30,12 +30,12 @@ void enable_raw_mode(){
 
 void game_loop(int mode){
     char buf[1000];
-    int result, buf_top, text_head;
-    result = text_head = 0;
+    int result, buf_top, text_head, wrong_count;
+    result = text_head = wrong_count = 0;
     buf_top = 1;
     if(mode == 1){
         clearScreen();
-        print_text_with_caret(print_text, text_head);
+        print_text_with_caret(print_text, text_head, wrong_count);
         while(1){
             /*
              * Init Step 1. Clear screen
@@ -46,30 +46,35 @@ void game_loop(int mode){
              * Step 2. Validate input
              * Step 3. Draw according to input and start from step 1
              * */
-
             take_char(buf, &buf_top);
             clearScreen();
-            switch(validate(buf, buf_top, text_head)) {
+            print_text_with_caret(print_text, text_head, wrong_count);
+            switch(validate(buf, buf_top, text_head, wrong_count)) {
                 case 0:
-                printf("\r\nYou typed the wrong character: %c, try %c\r\n", buf[buf_top-1], test_text[text_head]);
+                //printf("\r\nYou typed the wrong character: %c, try %c\r\n", buf[buf_top-1], test_text[text_head]);
+                wrong_count++;
                 buf_top--;
                 break;
             case 1:
-                text_head++;
+                if(wrong_count) buf_top--;
+                else text_head++;
                 break;
             case 2:
                 printf("\r\nCongratulations, you are a capable typist\r\n");
                 disable_raw_mode();
                 exit(0);
             case 3:
-                text_head--;
+                if(wrong_count)
+                wrong_count--;
+                else text_head--;
                 buf[buf_top] = '\0';
                 buf_top--;
                 break;
             default:
                 break;
             }
-            print_text_with_caret(print_text, text_head);
+                clearScreen();
+                print_text_with_caret(print_text, text_head, wrong_count);
         }
     }
 }

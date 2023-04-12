@@ -7,7 +7,7 @@ all: game
 game: fetch_text.o game.o text_helpers.o
 	echo "Linking files"
 	echo "Creating executable"
-	cc -g -lncurses -o game fetch_text.o game.o text_helpers.o
+	cc -g -o game fetch_text.o game.o text_helpers.o -lncurses
 
 clean:
 	echo "Cleaning up old .o files"
