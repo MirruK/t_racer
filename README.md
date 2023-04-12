@@ -11,10 +11,13 @@ a linux machine, it is unlikely that it will work in
 the intended way on a non-linux system.
 
 Firstly, make sure you have the ncurses package installed.
-On archlinux and ubuntu ncurses can be installed via the
-following commands:
+On archlinux ncurses can be installed via the
+following command:
 ```
 sudo pacman -S ncurses
+```
+On ubuntu:
+```
 sudo apt-get install libncurses5-dev
 ```
 
@@ -28,6 +31,7 @@ make
 
 
 The text you will be tasked with typing out is found
-under the "texts" directory. Support for providing
-your own text files via a command-line argument is
-planned for a future version.
+under the "texts" directory.
+
+You can provide your own text files as a command-line
+argument, eg. `./game "texts/my_own_text.txt"`
