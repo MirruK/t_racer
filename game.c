@@ -74,7 +74,8 @@ void game_loop(int mode){
 }
 
 int main(int argc, char *argv[]){
-    text_from_file("texts/sample.txt", test_text);
+    if(argc > 1) text_from_file(argv[1], test_text);
+    else text_from_file("texts/sample.txt", test_text);
     wrap_text(test_text, print_text, 70);
     enable_raw_mode();
     game_loop(1);
