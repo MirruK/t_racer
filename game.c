@@ -63,6 +63,7 @@ void game_loop(int mode){
                 exit(0);
             case 3:
                 text_head--;
+                buf[buf_top] = '\0';
                 buf_top--;
                 break;
             default:

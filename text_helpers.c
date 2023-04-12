@@ -14,7 +14,7 @@ void take_char(char *buf, int* buf_top){
 }
 
 int validate(char *buf, int buf_top, int text_head){
-    // if(buf[buf_top] == '\b') return 3;
+    if(buf[buf_top-1] == 8 || buf[buf_top-1] == 127) return 3;
     if((test_text[text_head+1] == '\0' || test_text[text_head+1] == EOF) && test_text[text_head] == buf[buf_top-1]) return 2;
     return test_text[text_head] == buf[buf_top-1];
 }
