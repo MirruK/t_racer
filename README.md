@@ -11,10 +11,11 @@ a linux machine, it is unlikely that it will work in
 the intended way on a non-linux system.
 
 Firstly, make sure you have the ncurses package installed.
-Most of you will have this from some other package but
-on archlinux ncurses can be installed via the command:
+On archlinux and ubuntu ncurses can be installed via the
+following commands:
 ```
 sudo pacman -S ncurses
+sudo apt-get install libncurses5-dev
 ```
 
 To create the binary simply run these commands:
