@@ -1,6 +1,4 @@
 #include "t_racer.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 /* Get text from a file into a buffer that is allocated by the caller */
 void text_from_file(char *file_name, char *buffer){
@@ -9,11 +7,18 @@ void text_from_file(char *file_name, char *buffer){
     FILE* text = fopen(file_name, "r");
     int buf_ind = 0;
     for(;getline(&line_buf, &linesize, text) != -1;){
-        for(int i = 0; line_buf[i] != '\n' && line_buf[i] != '\0'; i++){
+        for(int i = 0; line_buf[i] != '\n' && line_buf[i] != '\0' && line_buf[i] != EOF; i++){
             buffer[buf_ind++] = line_buf[i];
         }
         buffer[buf_ind++] = ' ';
     }
+    // Seek end of buffer
+    for(;buffer[buf_ind] != '\0' && buffer[buf_ind] != EOF; buf_ind++);
+    // Strip extra whitespace from the back of the text
+    while(isspace(buffer[buf_ind])){
+        buf_ind--;
+    }
+    buffer[buf_ind-1] = '\0';
     fclose(text);
     free(line_buf);
 }

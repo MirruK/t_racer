@@ -1,7 +1,7 @@
 #include "t_racer.h"
 
-char test_text[] =   "Type this text correctly to win.";
-char empty_text[] =  "                                ";
+char test_text[2000];
+char print_text[2000];
 struct termios orig_termios;
 
 void clearScreen() {
@@ -29,35 +29,26 @@ void enable_raw_mode(){
 }
 
 void game_loop(int mode){
-    char buf[100];
+    char buf[1000];
     int result, buf_top, text_head;
     result = text_head = 0;
     buf_top = 1;
     if(mode == 1){
-        // Init
-        // Step 1.
         clearScreen();
-        // Step 2.
-        printf("\n%s\r\n", test_text);
-        // Step 3.
-        empty_text[text_head] = '^';
-        printf("%s\r\n", empty_text);
-        empty_text[text_head] = ' ';
+        print_text_with_caret(print_text, text_head);
         while(1){
             /*
              * Init Step 1. Clear screen
              * Init Step 2. Draw text to type
-             * Init Step 3. Draw carret
+             * Init Step 3. Draw caret
              *
              * Step 1. take user input
              * Step 2. Validate input
              * Step 3. Draw according to input and start from step 1
              * */
 
-            // Step 1.
             take_char(buf, &buf_top);
             clearScreen();
-            // Step 2.
             switch(validate(buf, buf_top, text_head)) {
                 case 0:
                 printf("\r\nYou typed the wrong character: %c, try %c\r\n", buf[buf_top-1], test_text[text_head]);
@@ -68,7 +59,8 @@ void game_loop(int mode){
                 break;
             case 2:
                 printf("\r\nCongratulations, you are a capable typist\r\n");
-                return;
+                disable_raw_mode();
+                exit(0);
             case 3:
                 text_head--;
                 buf_top--;
@@ -76,21 +68,16 @@ void game_loop(int mode){
             default:
                 break;
             }
-            // Step 3.
-            // Step 3.1.
-            printf("\n%s\r\n", test_text);
-            // Step 3.2.
-            empty_text[text_head] = '^';
-            printf("%s\r", empty_text);
-            empty_text[text_head] = ' ';
+            print_text_with_caret(print_text, text_head);
         }
     }
 }
 
 int main(int argc, char *argv[]){
-    char buffer[2000];
-    text_from_file("texts/sample.txt", buffer);
+    text_from_file("texts/sample.txt", test_text);
+    wrap_text(test_text, print_text, 70);
     enable_raw_mode();
     game_loop(1);
+    disable_raw_mode();
     exit(0);
 }
