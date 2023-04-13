@@ -4,6 +4,16 @@ char test_text[2000];
 char print_text[2000];
 struct termios orig_termios;
 
+/* Get clock time with millisecond accuracy 
+ * Function by Daniel on stackoverflow
+ * thread answer: https://stackoverflow.com/a/64539170 */
+int64_t millis()
+{
+    struct timespec now;
+    timespec_get(&now, TIME_UTC);
+    return ((int64_t) now.tv_sec) * 1000 + ((int64_t) now.tv_nsec) / 1000000;
+}
+
 void clearScreen() {
   if (!cur_term)
     {
@@ -41,18 +51,9 @@ void game_loop(int mode){
         clearScreen();
         print_text_with_caret(print_text, text_head, wrong_count);
         while(1){
-            /*
-             * Init Step 1. Clear screen
-             * Init Step 2. Draw text to type
-             * Init Step 3. Draw caret
-             *
-             * Step 1. take user input
-             * Step 2. Validate input
-             * Step 3. Draw according to input and start from step 1
-             * */
             take_char(buf, &buf_top);
             if(!timer_started){
-                start = clock();
+                start = millis();
                 timer_started = 1;
             }
             clearScreen();
@@ -70,13 +71,12 @@ void game_loop(int mode){
                     else text_head++;
                     break;
                 case 2:
-                    end = clock();
-                    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+                    end = millis();
                     printf("\r\nCongratulations, you are a capable typist\r\n");
                     // Assumes text is in english (characters divided by chars_per_word)
                     double words_in_text = strlen(test_text) / 5.0;
                     // WPM = words divided by time_in_minutes
-                    int wpm = words_in_text / (cpu_time_used * 60); 
+                    int wpm = words_in_text / ((end-start)/60000.0); 
                     float typing_accuracy = 100 - (100 * (wrong_chars_written / (float)total_chars_written));
                     printf("Your typing speed is: %d WPM\r\n", wpm);
                     printf("Your typing accuracy is: %.1f%%\r\n", typing_accuracy);
