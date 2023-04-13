@@ -5,6 +5,8 @@
 #include <termios.h>
 #include <unistd.h>
 #include <term.h>
+#include <time.h>
+#include <string.h>
 
 /* game.c declarations */
 void disable_raw_mode(void);

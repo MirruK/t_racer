@@ -29,9 +29,13 @@ void enable_raw_mode(){
 }
 
 void game_loop(int mode){
+    clock_t start, end;
+    double cpu_time_used;
+    int total_chars_written, wrong_chars_written;
+    total_chars_written = wrong_chars_written = 0;
     char buf[1000];
-    int result, buf_top, text_head, wrong_count;
-    result = text_head = wrong_count = 0;
+    int result, buf_top, text_head, wrong_count, timer_started;
+    result = text_head = wrong_count = timer_started = 0;
     buf_top = 1;
     if(mode == 1){
         clearScreen();
@@ -47,34 +51,49 @@ void game_loop(int mode){
              * Step 3. Draw according to input and start from step 1
              * */
             take_char(buf, &buf_top);
+            if(!timer_started){
+                start = clock();
+                timer_started = 1;
+            }
             clearScreen();
             print_text_with_caret(print_text, text_head, wrong_count);
             switch(validate(buf, buf_top, text_head, wrong_count)) {
                 case 0:
-                //printf("\r\nYou typed the wrong character: %c, try %c\r\n", buf[buf_top-1], test_text[text_head]);
-                wrong_count++;
-                buf_top--;
-                break;
-            case 1:
-                if(wrong_count) buf_top--;
-                else text_head++;
-                break;
-            case 2:
-                printf("\r\nCongratulations, you are a capable typist\r\n");
-                disable_raw_mode();
-                exit(0);
-            case 3:
-                if(wrong_count)
-                wrong_count--;
-                else text_head--;
-                buf[buf_top] = '\0';
-                buf_top--;
-                break;
-            default:
-                break;
+                    total_chars_written++;
+                    wrong_chars_written++;
+                    wrong_count++;
+                    buf_top--;
+                    break;
+                case 1:
+                    total_chars_written++;
+                    if(wrong_count) buf_top--;
+                    else text_head++;
+                    break;
+                case 2:
+                    end = clock();
+                    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+                    printf("\r\nCongratulations, you are a capable typist\r\n");
+                    // Assumes text is in english (characters divided by chars_per_word)
+                    double words_in_text = strlen(test_text) / 5.0;
+                    // WPM = words divided by time_in_minutes
+                    int wpm = words_in_text / (cpu_time_used * 60); 
+                    float typing_accuracy = 100 - (100 * (wrong_chars_written / (float)total_chars_written));
+                    printf("Your typing speed is: %d WPM\r\n", wpm);
+                    printf("Your typing accuracy is: %.1f%%\r\n", typing_accuracy);
+                    disable_raw_mode();
+                    exit(0);
+                case 3:
+                    if(wrong_count)
+                        wrong_count--;
+                    else text_head--;
+                    buf[buf_top] = '\0';
+                    buf_top--;
+                    break;
+                default:
+                    break;
             }
-                clearScreen();
-                print_text_with_caret(print_text, text_head, wrong_count);
+            clearScreen();
+            print_text_with_caret(print_text, text_head, wrong_count);
         }
     }
 }
