@@ -8,7 +8,7 @@
 
 Disclaimer: This game has only been ran and tested on
 a linux machine, it is unlikely that it will work in
-the intended way on a non-linux system.
+the intended way on a windows system. (It **might** work on mac)
 
 Firstly, make sure you have the ncurses package installed.
 On archlinux ncurses can be installed via the
@@ -21,17 +21,15 @@ On ubuntu:
 sudo apt-get install libncurses5-dev
 ```
 
-To create the binary simply run these commands:
+Type these commands to compile and run the game:
 ```
 git clone https://github.com/MirruK/t_racer.git
 cd t_racer
 make
-./game
+./game *path to text file here*
 ``` 
 
-
-The text you will be tasked with typing out is found
-under the "texts" directory.
+Sample texts exist under the "texts"-directory
 
 You can provide your own text files as a command-line
 argument, eg. `./game "texts/my_own_text.txt"`
